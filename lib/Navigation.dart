@@ -44,7 +44,7 @@ class _NavigationState extends State<Navigation> {
             boxShadow: [
               BoxShadow(
                 blurRadius: 20,
-                color: Colors.black.withOpacity(.1),
+                color: Colors.black.withOpacity(.2),
               )
             ],
           ),
@@ -59,7 +59,7 @@ class _NavigationState extends State<Navigation> {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               duration: Duration(milliseconds: 400),
               tabBackgroundColor: Theme.of(context).primaryColor,
-              color: Theme.of(context).primaryColor.withOpacity(.8),
+              color: Theme.of(context).primaryColor.withOpacity(.7),
               tabs: [
                 GButton(
                   icon: Icons.home,

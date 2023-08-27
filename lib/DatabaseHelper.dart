@@ -1,63 +1,135 @@
-import 'package:path/path.dart';
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+//Class Model
 class ScannedData {
-  int id;
-  String content;
-  DateTime timestamp;
+  int? id;
+  String? content;
+  DateTime? date;
 
-  ScannedData(this.id, this.content, this.timestamp);
+  ScannedData({this.id, this.content, this.date});
+  // constructor with id
+  ScannedData.withId({this.id, this.content, this.date});
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'content': content,
-      'timestamp': timestamp.toIso8601String(),
-    };
+    final map = Map<String, dynamic>();
+
+    if (id != null) {
+      map['id'] = id;
+    }
+
+    map["content"] = content;
+    map["date"] = date!.toIso8601String();
+    return map;
+  }
+
+  factory ScannedData.fromMap(Map<String, dynamic> map) {
+    return ScannedData.withId(
+      id: map['title'],
+      content: map['content'],
+      date: DateTime.parse(map["date"]),
+    );
   }
 }
 
+//database helper
 class DatabaseHelper {
-  Future<Database> database() async {
-    return openDatabase(
-      join(await getDatabasesPath(), 'scanned_data.db'),
-      onCreate: (db, version) {
-        return db.execute(
-          "CREATE TABLE scanned_data(id INTEGER PRIMARY KEY, content TEXT, timestamp TEXT)",
-        );
-      },
+  static final DatabaseHelper instance = DatabaseHelper._instance();
+
+  //instance of a fdb
+  static Database? _db = null;
+
+  DatabaseHelper._instance();
+
+  String scannerTable = 'scanned_table';
+  String colId = 'id';
+  String colContent = 'content';
+  String colDate = 'date';
+
+  //if db is null then create it
+  Future<Database?> get db async {
+    if (_db == null) {
+      _db = await initDB();
+    }
+    return _db;
+  }
+
+  //initialize the database
+  Future<Database> initDB() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    String path = dir.path + 'scanned_data.db';
+    final scannedDataDB = await openDatabase(
+      path,
       version: 1,
+      onCreate: _createDb,
     );
+    return scannedDataDB;
   }
 
-  Future<void> insertScannedData(ScannedData scannedData) async {
-    final db = await database();
-    await db.insert(
-      'scanned_data',
-      scannedData.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+  //'Create a database'
+  void _createDb(Database db, int version) async {
+    await db.execute('CREATE TABLE $scannerTable('
+        '$colId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, '
+        '$colContent TEXT,'
+        '$colDate TEXT)');
   }
 
-  Future<List<ScannedData>> getScannedDataList() async {
-    final db = await database();
-    final List<Map<String, dynamic>> maps = await db.query('scanned_data');
-    return List.generate(maps.length, (i) {
-      return ScannedData(
-        maps[i]['id'],
-        maps[i]['content'],
-        DateTime.parse(maps[i]['timestamp']),
-      );
+  //getMapList
+  Future<List<Map<String, dynamic>>> getScannedDataMapList() async {
+    Database? db = await this.db;
+    final List<Map<String, dynamic>> result = await db!.query(scannerTable);
+    return result;
+  }
+
+  //get the list of data
+  Future<List<ScannedData>> getScannedList() async {
+    final List<Map<String, dynamic>> scannedMapList =
+        await getScannedDataMapList();
+
+    final List<ScannedData> scannedList = [];
+
+    scannedMapList.forEach((element) {
+      scannedList.add(ScannedData.fromMap(element));
     });
+
+    scannedList.sort((scanB, scanA) => scanB.date!.compareTo(scanA.date!));
+
+    return scannedList;
   }
 
-  Future<int> delete(int id) async {
-    final db = await database();
+  //insert scanned data
+  Future<int> insertScannedData(ScannedData scannedData) async {
+    Database? db = await this.db;
+    final int result = await db!.insert(
+      scannerTable,
+      scannedData.toMap(),
+    );
+    return result;
+  }
 
-    return await db.delete(
-      "scanned_data",
-      where: 'id = ?',
+  //update scanned data
+  Future<int> updatingScannedData(ScannedData scannedData) async {
+    Database? db = await this.db;
+    final int result = await db!.update(
+      scannerTable,
+      scannedData.toMap(),
+      where: '$colId =?',
+      whereArgs: [scannedData.id],
+    );
+    return result;
+  }
+
+  //delete scanned data
+  Future<void> deletingScannedData(int id) async {
+    Database? db = await this.db;
+    // final int result =
+    await db!.delete(
+      scannerTable,
+      where: '$colId = ?',
       whereArgs: [id],
     );
+    // return result;
   }
 }

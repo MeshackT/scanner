@@ -18,7 +18,7 @@ class Reuse {
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height / 8,
-        color: contextDataColor.primaryColor,
+        color: Theme.of(context).primaryColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -93,9 +93,10 @@ class Reuse {
 }
 
 ButtonStyle buttonRound = OutlinedButton.styleFrom(
-    shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20))),
-    foregroundColor: Colors.indigo);
+  elevation: 1,
+  shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(20))),
+);
 
 TextStyle textStyleText = TextStyle(
     fontWeight: FontWeight.normal, letterSpacing: 1, color: Colors.indigo);

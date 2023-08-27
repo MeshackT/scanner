@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:logger/logger.dart';
+import 'package:scanner/DatabaseHelper.dart';
 import 'package:scanner/Reuse.dart';
-import 'package:sqflite/sqflite.dart';
 
-import 'DatabaseHelper.dart';
+Logger logger = Logger(
+  printer: PrettyPrinter(colors: true),
+);
 
 class ScannerHome extends StatefulWidget {
   const ScannerHome({Key? key}) : super(key: key);
@@ -20,34 +22,12 @@ class ScannerHome extends StatefulWidget {
 
 class _ScannerHomeState extends State<ScannerHome> {
   String _scanBarcode = '';
-  late final cnt = 0;
-  late Database db;
 
-  final dbHelper = DatabaseHelper();
+  final DateTime timeStamp = DateTime.now();
 
-  int randomNumber = 0;
+  late DatabaseHelper _databaseHelper;
 
-  void generateRandomNumber() {
-    final random = Random();
-    setState(() {
-      randomNumber =
-          random.nextInt(1000000); // Generate a random number between 0 and 99
-    });
-  }
-
-  Future<void> startBarcodeScanStream() async {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-        .listen((barcode) {
-      print(barcode);
-      final scannedData = ScannedData(
-        randomNumber, // The ID will be assigned automatically by the database
-        barcode,
-        DateTime.now(),
-      );
-      dbHelper.insertScannedData(scannedData);
-    });
-  }
+  late Future<List<ScannedData>> _scannedData;
 
   Future<void> scanQR() async {
     String barcodeScanRes;
@@ -55,13 +35,14 @@ class _ScannerHomeState extends State<ScannerHome> {
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.QR);
-      print(barcodeScanRes);
-      final scannedData = ScannedData(
-        randomNumber, // The ID will be assigned automatically by the database
-        barcodeScanRes,
-        DateTime.now(),
-      );
-      dbHelper.insertScannedData(scannedData);
+      logger.i(barcodeScanRes);
+
+      // Use barcodeScanRes to insert data
+      ScannedData scannedData =
+          ScannedData(content: barcodeScanRes, date: timeStamp);
+
+      await DatabaseHelper.instance.insertScannedData(scannedData);
+      logger.e("Data inserted in the database ${scannedData}");
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
@@ -96,6 +77,17 @@ class _ScannerHomeState extends State<ScannerHome> {
     setState(() {
       _scanBarcode = barcodeScanRes;
     });
+  }
+
+  _updateScannedList() {
+    _scannedData = DatabaseHelper.instance.getScannedList();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _updateScannedList();
   }
 
   @override
@@ -145,62 +137,67 @@ class _ScannerHomeState extends State<ScannerHome> {
                     Reuse.spaceBetween(),
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        color: Theme.of(context).primaryColor.withOpacity(.04),
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: Image.asset(
-                                    "assets/logo.png",
+                      child: Card(
+                        elevation: 1,
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 5),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                          width: MediaQuery.of(context).size.width,
+                          color:
+                              Theme.of(context).primaryColor.withOpacity(.09),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child: Image.asset(
+                                      "assets/logo.png",
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Scan result',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                              ],
-                            ),
-                            IconButton(
-                                onPressed: () async {
-                                  try {
-                                    if (_scanBarcode.isNotEmpty ||
-                                        _scanBarcode.length > 0) {
-                                      await FlutterShare.share(
-                                        title: 'QR code result:',
-                                        text: _scanBarcode,
-                                      );
-                                    } else {
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Scan result',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w800),
+                                  ),
+                                ],
+                              ),
+                              IconButton(
+                                  onPressed: () async {
+                                    try {
+                                      if (_scanBarcode.isNotEmpty ||
+                                          _scanBarcode.length > 0) {
+                                        await FlutterShare.share(
+                                          title: 'QR code result:',
+                                          text: _scanBarcode,
+                                        );
+                                      } else {
+                                        Reuse.callSnack(
+                                          context,
+                                          "There's no scanned data to share",
+                                        );
+                                      }
+                                    } on Exception catch (e) {
                                       Reuse.callSnack(
                                         context,
-                                        "There's no scanned data to share",
+                                        e.toString(),
                                       );
                                     }
-                                  } on Exception catch (e) {
-                                    Reuse.callSnack(
-                                      context,
-                                      e.toString(),
-                                    );
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.share,
-                                  color: Theme.of(context).primaryColor,
-                                ))
-                          ],
+                                  },
+                                  icon: Icon(
+                                    Icons.share,
+                                    color: Theme.of(context).primaryColor,
+                                  ))
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -212,30 +209,35 @@ class _ScannerHomeState extends State<ScannerHome> {
             flex: 1,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                color: Theme.of(context).primaryColor.withOpacity(.03),
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: _scanBarcode == ""
-                      ? Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Icon(
-                            Icons.document_scanner_rounded,
-                            color: Theme.of(context).primaryColor,
-                            size: 220,
+              child: Card(
+                elevation: 2,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                  width: MediaQuery.of(context).size.width,
+                  color: Theme.of(context).primaryColor.withOpacity(.08),
+                  child: SingleChildScrollView(
+                    child: _scanBarcode == ""
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 10.0),
+                            child: Icon(
+                              Icons.document_scanner_rounded,
+                              color: Theme.of(context).primaryColor,
+                              size: 220,
+                            ),
+                          )
+                        : Center(
+                            child: SelectableText(
+                              _scanBarcode.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .primaryColor
+                                      .withOpacity(.7),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400),
+                            ),
                           ),
-                        )
-                      : Center(
-                          child: SelectableText(
-                            _scanBarcode.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400),
-                          ),
-                        ),
+                  ),
                 ),
               ),
             ),

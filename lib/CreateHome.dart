@@ -1,8 +1,9 @@
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:esys_flutter_share_plus/esys_flutter_share_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'Reuse.dart';
@@ -36,24 +37,31 @@ class _CreateHomeState extends State<CreateHome> {
                   SizedBox(
                     height: 10,
                   ),
-                  TextFormField(
-                    controller: convertText,
-                    maxLines: 9,
-                    decoration: textInputDecoration.copyWith(
-                      hintText: "Your text here",
-                      hintStyle: textStyleText.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).primaryColor.withOpacity(.7),
+                  Card(
+                    elevation: 2,
+                    child: TextFormField(
+                      controller: convertText,
+                      maxLines: 9,
+                      decoration: textInputDecoration.copyWith(
+                        label: Text(
+                          "Your text here",
+                          style: textStyleText,
+                        ),
+                        hintText: "Your text here",
+                        hintStyle: textStyleText.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).primaryColor.withOpacity(.7),
+                        ),
                       ),
+                      style: textStyleText,
+                      textAlign: TextAlign.center,
+                      autocorrect: true,
+                      textAlignVertical: TextAlignVertical.center,
+                      onSaved: (value) {
+                        //Do something with the user input.
+                        convertText.text = value!;
+                      },
                     ),
-                    style: textStyleText,
-                    textAlign: TextAlign.center,
-                    autocorrect: true,
-                    textAlignVertical: TextAlignVertical.center,
-                    onSaved: (value) {
-                      //Do something with the user input.
-                      convertText.text = value!;
-                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -77,7 +85,10 @@ class _CreateHomeState extends State<CreateHome> {
                                       "failed to send the feedback, please try again later");
                             }
                           },
-                          style: buttonRound,
+                          style: buttonRound.copyWith(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                          ),
                           child: Text(
                             "Create",
                             style: TextStyle(
@@ -93,50 +104,54 @@ class _CreateHomeState extends State<CreateHome> {
                   Reuse.spaceBetween(),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                      color: Theme.of(context).primaryColor.withOpacity(.04),
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 40,
-                                height: 40,
-                                child: Image.asset(
-                                  "assets/logo.png",
+                    child: Card(
+                      elevation: 2,
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                        width: MediaQuery.of(context).size.width,
+                        color: Theme.of(context).primaryColor.withOpacity(.08),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: Image.asset(
+                                    "assets/logo.png",
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Scan result',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w800),
-                              ),
-                            ],
-                          ),
-                          IconButton(
-                              onPressed: () async {
-                                try {
-                                  shareImage();
-                                } on Exception catch (e) {
-                                  Reuse.callSnack(
-                                    context,
-                                    e.toString(),
-                                  );
-                                }
-                              },
-                              icon: Icon(
-                                Icons.share,
-                                color: Theme.of(context).primaryColor,
-                              ))
-                        ],
+                                SizedBox(width: 10),
+                                Text(
+                                  'Scan result',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w800),
+                                ),
+                              ],
+                            ),
+                            IconButton(
+                                onPressed: () async {
+                                  try {
+                                    _shareQRImage();
+                                  } on Exception catch (e) {
+                                    Reuse.callSnack(
+                                      context,
+                                      e.toString(),
+                                    );
+                                  }
+                                },
+                                icon: Icon(
+                                  Icons.share,
+                                  color: Theme.of(context).primaryColor,
+                                ))
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -145,19 +160,23 @@ class _CreateHomeState extends State<CreateHome> {
             ),
             ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: Container(
-                margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                color: Theme.of(context).primaryColor.withOpacity(.02),
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: Center(
-                    child: QrImageView(
-                      data: qrText,
-                      version: QrVersions.auto,
-                      size: 200.0,
-                      gapless: true,
-                      errorCorrectionLevel: QrErrorCorrectLevel.H,
+              child: Card(
+                elevation: 2,
+                child: Container(
+                  margin:
+                      EdgeInsets.only(top: 20, bottom: 20, left: 20, right: 20),
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                  width: MediaQuery.of(context).size.width,
+                  color: Theme.of(context).primaryColor.withOpacity(.08),
+                  child: SingleChildScrollView(
+                    child: Center(
+                      child: QrImageView(
+                        data: qrText,
+                        version: QrVersions.auto,
+                        size: 200.0,
+                        gapless: true,
+                        errorCorrectionLevel: QrErrorCorrectLevel.H,
+                      ),
                     ),
                   ),
                 ),
@@ -169,25 +188,36 @@ class _CreateHomeState extends State<CreateHome> {
     );
   }
 
-  Future<void> shareImage() async {
-    final qrImageData =
-        await QrPainter(data: qrText, version: QrVersions.auto, gapless: true)
-            .toImageData(200);
-    final qrImageFile = await saveImage(qrImageData!);
+  Future _shareQRImage() async {
+    final image = await QrPainter(
+      data: qrText,
+      version: QrVersions.auto,
+      gapless: false,
+      eyeStyle:
+          const QrEyeStyle(eyeShape: QrEyeShape.square, color: Colors.white),
+      color: Colors.white,
+      dataModuleStyle: const QrDataModuleStyle(
+          dataModuleShape: QrDataModuleShape.square, color: Colors.white),
+    ).toImageData(200.0); // Generate QR code image data
 
-    if (qrImageFile != null) {
-      await Share.file('QR Code', 'qrcode.png',
-          qrImageData.buffer.asUint8List(), 'image/png');
-    }
-  }
+    final filename = 'qr_code.png';
 
-  Future<Uint8List?> saveImage(ByteData data) async {
-    // final buffer = data.buffer.asUint8List();
-    // final directory = await getTemporaryDirectory();
-    // final imageFile = File('${directory.path}/qrcode.png');
-    //
-    // await imageFile.writeAsBytes(buffer);
-    //
-    // return imageFile.readAsBytes();
+    final tempDir =
+        await getTemporaryDirectory(); // Get temporary directory to store the generated image
+
+    final file = await File('${tempDir.path}/$filename')
+        .create(); // Create a file to store the generated image
+
+    var bytes = image!.buffer.asUint8List(); // Get the image bytes
+
+    await file.writeAsBytes(bytes); // Write the image bytes to the file
+
+    final path = await Share.file(
+      qrText,
+      filename,
+      bytes,
+      'image/png',
+    );
+    // logger.e('QR code shared to: ${file.path}');
   }
 }

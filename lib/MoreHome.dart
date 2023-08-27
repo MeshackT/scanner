@@ -26,7 +26,7 @@ class MoreHome extends StatelessWidget {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: 30,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).primaryColor.withOpacity(1),
                   child: Center(
                     child: Text(
                       "Send Us Feedback",
@@ -63,7 +63,7 @@ class MoreHome extends StatelessWidget {
                     child: Container(
                       width: MediaQuery.of(context).size.width,
                       height: 30,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).primaryColor.withOpacity(1),
                       child: Center(
                         child: Text(
                           "More apps",
@@ -104,7 +104,7 @@ class MoreHome extends StatelessWidget {
                       topRight: Radius.circular(10),
                     ),
                     child: Container(
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).primaryColor.withOpacity(1),
                       width: MediaQuery.of(context).size.width,
                       height: 50,
                       child: Center(
@@ -121,13 +121,20 @@ class MoreHome extends StatelessWidget {
                   ),
                   Reuse.spaceBetween(),
                   Reuse.spaceBetween(),
-                  Text(
-                    "An easy to use qr scanner application designed to convert"
-                    " qr codes to readable text and convert text into qr images "
-                    "like sequence.\nYour camera and storage access is required to "
-                    "use this application",
-                    textAlign: TextAlign.center,
-                    style: textStyleText.copyWith(fontSize: 14),
+                  Card(
+                    elevation: 2,
+                    child: Container(
+                      padding: EdgeInsets.all(20),
+                      color: Theme.of(context).primaryColor.withOpacity(.04),
+                      child: Text(
+                        "An easy to use qr scanner application designed to convert"
+                        " qr codes to readable text and convert text into qr images "
+                        "like sequence.\nYour camera and storage access is required to "
+                        "use this application",
+                        textAlign: TextAlign.center,
+                        style: textStyleText.copyWith(fontSize: 14),
+                      ),
+                    ),
                   ),
                   Reuse.spaceBetween(),
                   Text(
@@ -164,12 +171,15 @@ showSheetToShare(BuildContext context) {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: SingleChildScrollView(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const SizedBox(
                         height: 10,
                       ),
                       Text(
                         "Share these applications with your friends",
+                        textAlign: TextAlign.center,
                         style: textStyleText.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
@@ -304,7 +314,10 @@ showSheetToSendUsFeedback(BuildContext context) {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      style: buttonRound,
+                      style: buttonRound.copyWith(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white),
+                      ),
                       child: Text(
                         "Discard",
                         style: TextStyle(
@@ -366,10 +379,10 @@ showSheetToSendUsFeedback(BuildContext context) {
                                   fontWeight: FontWeight.w800,
                                   color: Theme.of(context)
                                       .primaryColor
-                                      .withOpacity(.7)),
+                                      .withOpacity(1)),
                             ),
                             style: textStyleText,
-                            textAlign: TextAlign.left,
+                            textAlign: TextAlign.center,
                             autocorrect: true,
                             textAlignVertical: TextAlignVertical.center,
                             onSaved: (value) {
@@ -389,7 +402,7 @@ showSheetToSendUsFeedback(BuildContext context) {
                                 fontWeight: FontWeight.w800,
                                 color: Theme.of(context)
                                     .primaryColor
-                                    .withOpacity(.7),
+                                    .withOpacity(1),
                               ),
                             ),
                             style: textStyleText,
@@ -413,7 +426,7 @@ showSheetToSendUsFeedback(BuildContext context) {
                                 fontWeight: FontWeight.w800,
                                 color: Theme.of(context)
                                     .primaryColor
-                                    .withOpacity(.7),
+                                    .withOpacity(1),
                               ),
                             ),
                             style: textStyleText,
@@ -438,7 +451,7 @@ showSheetToSendUsFeedback(BuildContext context) {
                                 fontWeight: FontWeight.w800,
                                 color: Theme.of(context)
                                     .primaryColor
-                                    .withOpacity(.7),
+                                    .withOpacity(1),
                               ),
                             ),
                             style: textStyleText,
@@ -486,7 +499,11 @@ showSheetToSendUsFeedback(BuildContext context) {
                                     subjectOfSender.clear();
                                     emailOfSender.clear();
                                   },
-                                  style: buttonRound,
+                                  style: buttonRound.copyWith(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.white),
+                                  ),
                                   child: Text(
                                     "Send",
                                     style: TextStyle(

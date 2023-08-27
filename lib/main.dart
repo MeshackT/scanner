@@ -7,7 +7,11 @@ import 'package:scanner/MoreHome.dart';
 import 'package:scanner/Navigation.dart';
 import 'package:scanner/ScannerHome.dart';
 
-void main() {
+import 'DatabaseHelper.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DatabaseHelper.instance.initDB(); // Initialize the database
   runApp(const MyApp());
 }
 
