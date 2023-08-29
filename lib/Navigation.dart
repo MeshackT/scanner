@@ -56,61 +56,60 @@ class _NavigationState extends State<Navigation> {
           darkModeEnabled: widget.darkModeEnabled,
           toggleDarkMode: widget.toggleDarkMode),
     ];
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Theme.of(context).primaryColorLight,
-        body: PageView(
-          controller: pageController,
-          children: screens,
-          onPageChanged: (index) {
-            setState(() {
-              selectedIndex = index;
-            });
-          },
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColorLight,
+      extendBody: true,
+      body: PageView(
+        controller: pageController,
+        children: screens,
+        onPageChanged: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColorLight,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 20,
+              color: Colors.black.withOpacity(.2),
+            )
+          ],
         ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).primaryColorLight,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 20,
-                color: Colors.black.withOpacity(.2),
-              )
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+          child: GNav(
+            rippleColor: Colors.transparent,
+            hoverColor: Theme.of(context).primaryColorDark.withOpacity(.8),
+            gap: 8,
+            activeColor: Theme.of(context).primaryColorLight,
+            iconSize: 24,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            duration: Duration(milliseconds: 400),
+            tabBackgroundColor: Theme.of(context).primaryColor,
+            color: Theme.of(context).primaryColor.withOpacity(.7),
+            tabs: [
+              GButton(
+                icon: Icons.home,
+                text: 'Home',
+              ),
+              GButton(
+                icon: Icons.history,
+                text: 'Recent',
+              ),
+              GButton(
+                icon: Icons.create,
+                text: 'Create',
+              ),
+              GButton(
+                icon: Icons.more,
+                text: 'More',
+              ),
             ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
-            child: GNav(
-              rippleColor: Colors.transparent,
-              hoverColor: Theme.of(context).primaryColorDark.withOpacity(.8),
-              gap: 8,
-              activeColor: Theme.of(context).primaryColorLight,
-              iconSize: 24,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              duration: Duration(milliseconds: 400),
-              tabBackgroundColor: Theme.of(context).primaryColor,
-              color: Theme.of(context).primaryColor.withOpacity(.7),
-              tabs: [
-                GButton(
-                  icon: Icons.home,
-                  text: 'Home',
-                ),
-                GButton(
-                  icon: Icons.history,
-                  text: 'Recent',
-                ),
-                GButton(
-                  icon: Icons.create,
-                  text: 'Create',
-                ),
-                GButton(
-                  icon: Icons.more,
-                  text: 'More',
-                ),
-              ],
-              selectedIndex: selectedIndex,
-              onTabChange: changeTab,
-            ),
+            selectedIndex: selectedIndex,
+            onTabChange: changeTab,
           ),
         ),
       ),

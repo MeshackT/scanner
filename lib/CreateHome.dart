@@ -27,203 +27,208 @@ class _CreateHomeState extends State<CreateHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Column(
-                children: [
-                  Reuse.HeaderText(
-                      context, "Converting", "Convert your text to a qr code"),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Card(
-                    elevation: 2,
-                    color: Theme.of(context).primaryColorLight,
-                    child: TextFormField(
-                      controller: convertText,
-                      maxLines: 7,
-                      decoration: textInputDecoration.copyWith(
-                          fillColor: Theme.of(context).primaryColorLight,
-                          label: Text(
-                            "Your text here",
-                            style: textStyleText.copyWith(
-                                fontWeight: FontWeight.w900,
-                                color: Theme.of(context).primaryColor),
-                          ),
-                          hintText: "Your text here",
-                          hintStyle: textStyleText.copyWith(
-                            fontWeight: FontWeight.w800,
-                            color:
-                                Theme.of(context).primaryColor.withOpacity(.7),
-                          ),
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor,
-                                width: 2),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabled: true),
-                      style: textStyleText.copyWith(
-                          color: Theme.of(context).primaryColor),
-                      textAlign: TextAlign.center,
-                      autocorrect: true,
-                      textAlignVertical: TextAlignVertical.center,
-                      onSaved: (value) {
-                        //Do something with the user input.
-                        convertText.text = value!;
-                      },
+    return SafeArea(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Column(
+                  children: [
+                    Reuse.HeaderText(context, "Converting",
+                        "Convert your text to a qr code"),
+                    SizedBox(
+                      height: 10,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        OutlinedButton(
-                          onPressed: () async {
-                            //validate the inputs
-                            try {
-                              setState(() {
-                                qrText = convertText.text.trim();
-                              });
-                            } on Exception catch (e) {
-                              // TODO
-                              Fluttertoast.showToast(
-                                  backgroundColor:
-                                      Theme.of(context).primaryColor,
-                                  msg:
-                                      "failed to send the feedback, please try again later");
-                            }
-                          },
-                          style: buttonRound.copyWith(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Theme.of(context).primaryColorLight),
-                          ),
-                          child: Text(
-                            "Create",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: Card(
-                      color: Theme.of(context).primaryColorLight,
+                    Card(
                       elevation: 2,
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        width: MediaQuery.of(context).size.width,
-                        // color: Theme.of(context).primaryColor.withOpacity(.08),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: Image.asset(
-                                    "assets/logo.png",
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Scan result',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                              ],
+                      color: Theme.of(context).primaryColorLight,
+                      child: TextFormField(
+                        controller: convertText,
+                        maxLines: 7,
+                        decoration: textInputDecoration.copyWith(
+                            fillColor: Theme.of(context).primaryColorLight,
+                            label: Text(
+                              "Your text here",
+                              style: textStyleText.copyWith(
+                                  fontWeight: FontWeight.w900,
+                                  color: Theme.of(context).primaryColor),
                             ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () async {
-                                    try {
-                                      _screenShot();
-                                    } on Exception catch (e) {
-                                      Reuse.callSnack(
-                                        context,
-                                        e.toString(),
-                                      );
-                                    }
-                                  },
-                                  icon: Icon(
-                                    Icons.screenshot,
-                                    color: Theme.of(context).primaryColor,
+                            hintText: "Your text here",
+                            hintStyle: textStyleText.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: Theme.of(context)
+                                  .primaryColor
+                                  .withOpacity(.7),
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            enabled: true),
+                        style: textStyleText.copyWith(
+                            color: Theme.of(context).primaryColor),
+                        textAlign: TextAlign.center,
+                        autocorrect: true,
+                        textAlignVertical: TextAlignVertical.center,
+                        onSaved: (value) {
+                          //Do something with the user input.
+                          convertText.text = value!;
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () async {
+                              //validate the inputs
+                              try {
+                                setState(() {
+                                  qrText = convertText.text.trim();
+                                });
+                              } on Exception catch (e) {
+                                // TODO
+                                Fluttertoast.showToast(
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
+                                    msg:
+                                        "failed to send the feedback, please try again later");
+                              }
+                            },
+                            style: buttonRound.copyWith(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Theme.of(context).primaryColorLight),
+                            ),
+                            child: Text(
+                              "Create",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Card(
+                        color: Theme.of(context).primaryColorLight,
+                        elevation: 2,
+                        child: Container(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                          width: MediaQuery.of(context).size.width,
+                          // color: Theme.of(context).primaryColor.withOpacity(.08),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child: Image.asset(
+                                      "assets/logo.png",
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )
-                          ],
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Scan result',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w800),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () async {
+                                      try {
+                                        _screenShot();
+                                      } on Exception catch (e) {
+                                        Reuse.callSnack(
+                                          context,
+                                          e.toString(),
+                                        );
+                                      }
+                                    },
+                                    icon: Icon(
+                                      Icons.screenshot,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Padding(
-                padding:
-                    EdgeInsets.only(bottom: 20, left: 20, right: 20, top: 0),
-                child: Card(
-                  elevation: 2,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.transparent,
-                    // Theme.of(context).primaryColor.withOpacity(.08),
-                    child: SingleChildScrollView(
-                      child: Screenshot(
-                        controller: screenshotController,
-                        child: Container(
-                          // color: Theme.of(context).primaryColorLight,
-                          child: Center(
-                            child: QrImageView(
-                              data: qrText,
-                              version: QrVersions.auto,
-                              gapless: false,
-                              eyeStyle: QrEyeStyle(
-                                eyeShape: QrEyeShape.square,
-                                color: Colors.white,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(bottom: 20, left: 20, right: 20, top: 0),
+                  child: Card(
+                    elevation: 2,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      width: MediaQuery.of(context).size.width,
+                      color: Colors.transparent,
+                      // Theme.of(context).primaryColor.withOpacity(.08),
+                      child: SingleChildScrollView(
+                        child: Screenshot(
+                          controller: screenshotController,
+                          child: Container(
+                            // color: Theme.of(context).primaryColorLight,
+                            child: Center(
+                              child: QrImageView(
+                                data: qrText,
+                                version: QrVersions.auto,
+                                gapless: false,
+                                eyeStyle: QrEyeStyle(
+                                  eyeShape: QrEyeShape.square,
+                                  color: Colors.white,
+                                ),
+                                dataModuleStyle: QrDataModuleStyle(
+                                  dataModuleShape: QrDataModuleShape.square,
+                                  color: Colors
+                                      .black, // Set the QR code pattern color to black
+                                ),
+                                size: 220,
+                                // Set the background color to white
                               ),
-                              dataModuleStyle: QrDataModuleStyle(
-                                dataModuleShape: QrDataModuleShape.square,
-                                color: Colors
-                                    .black, // Set the QR code pattern color to black
-                              ),
-                              // Set the background color to white
                             ),
                           ),
                         ),
@@ -232,8 +237,8 @@ class _CreateHomeState extends State<CreateHome> {
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

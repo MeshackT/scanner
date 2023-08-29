@@ -21,51 +21,20 @@ class MoreHome extends StatefulWidget {
 class _MoreHomeState extends State<MoreHome> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Reuse.HeaderText(context, "Generals", "Send us feedback and share"),
-            Reuse.spaceBetween(),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: 30,
-                color: Theme.of(context).primaryColor,
-                child: Center(
-                  child: Text(
-                    "Send us feedback",
-                    style: textStyleText.copyWith(
-                        color: Theme.of(context).primaryColorLight),
-                  ),
-                ),
-              ),
-            ),
-            Column(
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: Theme.of(context).primaryColorLight,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Container(
-                    color: Theme.of(context).primaryColorLight,
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 20,
-                    child: TextButton(
-                      onPressed: () {
-                        showSheetToSendUsFeedback(context);
-                      },
-                      child: Text(
-                        "Feedback",
-                        textAlign: TextAlign.left,
-                        style: textStyleText.copyWith(
-                            color: Theme.of(context).primaryColor),
-                      ),
-                    ),
-                  ),
-                ),
+                Reuse.HeaderText(
+                    context, "Generals", "Send us feedback and share"),
                 Reuse.spaceBetween(),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
@@ -75,143 +44,183 @@ class _MoreHomeState extends State<MoreHome> {
                     color: Theme.of(context).primaryColor,
                     child: Center(
                       child: Text(
-                        "More apps",
+                        "Send us feedback",
                         style: textStyleText.copyWith(
                             color: Theme.of(context).primaryColorLight),
                       ),
                     ),
                   ),
                 ),
-                Reuse.spaceBetween(),
-              ],
-            ),
-            Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Container(
-                    color: Theme.of(context).primaryColorLight,
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height / 20,
-                    child: TextButton(
-                      onPressed: () {
-                        showSheetToShare(context);
-                      },
-                      child: Text(
-                        "More",
-                        textAlign: TextAlign.left,
-                        style: textStyleText.copyWith(
-                            color: Theme.of(context).primaryColor),
-                      ),
-                    ),
-                  ),
-                ),
-                Reuse.spaceBetween(),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 30,
-                    color: Theme.of(context).primaryColor,
-                    child: Center(
-                      child: Text(
-                        "Theme",
-                        style: textStyleText.copyWith(
-                            color: Theme.of(context).primaryColorLight),
-                      ),
-                    ),
-                  ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
+                Column(
                   children: [
-                    Switch(
-                      value: widget.darkModeEnabled,
-                      onChanged: (val) async {
-                        widget.toggleDarkMode(val);
-                      },
-                      inactiveThumbColor:
-                          Theme.of(context).primaryColorLight.withOpacity(.6),
-                      activeColor: Theme.of(context).primaryColor,
-                      thumbIcon:
-                          MaterialStateProperty.resolveWith((Set states) {
-                        if (states.contains(MaterialState.disabled)) {
-                          return const Icon(
-                            Icons.close,
-                            color: Colors.grey,
-                          );
-                        }
-                        return null; // All other states will use the default thumbIcon.
-                      }),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Container(
+                        color: Theme.of(context).primaryColorLight,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height / 20,
+                        child: TextButton(
+                          onPressed: () {
+                            showSheetToSendUsFeedback(context);
+                          },
+                          child: Text(
+                            "Feedback",
+                            textAlign: TextAlign.left,
+                            style: textStyleText.copyWith(
+                                color: Theme.of(context).primaryColor),
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(
-                      width: 20,
+                    Reuse.spaceBetween(),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 30,
+                        color: Theme.of(context).primaryColor,
+                        child: Center(
+                          child: Text(
+                            "More apps",
+                            style: textStyleText.copyWith(
+                                color: Theme.of(context).primaryColorLight),
+                          ),
+                        ),
+                      ),
                     ),
-                    Text(
-                      "Dark Theme",
-                      style: textStyleText.copyWith(
-                          color: Theme.of(context).primaryColor,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold),
+                    Reuse.spaceBetween(),
+                  ],
+                ),
+                Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Container(
+                        color: Theme.of(context).primaryColorLight,
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height / 20,
+                        child: TextButton(
+                          onPressed: () {
+                            showSheetToShare(context);
+                          },
+                          child: Text(
+                            "More",
+                            textAlign: TextAlign.left,
+                            style: textStyleText.copyWith(
+                                color: Theme.of(context).primaryColor),
+                          ),
+                        ),
+                      ),
                     ),
-                    TextButton(
-                      onPressed: null,
-                      child: Text(""),
+                    Reuse.spaceBetween(),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 30,
+                        color: Theme.of(context).primaryColor,
+                        child: Center(
+                          child: Text(
+                            "Theme",
+                            style: textStyleText.copyWith(
+                                color: Theme.of(context).primaryColorLight),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Switch(
+                          value: widget.darkModeEnabled,
+                          onChanged: (val) async {
+                            widget.toggleDarkMode(val);
+                          },
+                          inactiveThumbColor: Theme.of(context)
+                              .primaryColorLight
+                              .withOpacity(.6),
+                          activeColor: Theme.of(context).primaryColor,
+                          thumbIcon:
+                              MaterialStateProperty.resolveWith((Set states) {
+                            if (states.contains(MaterialState.disabled)) {
+                              return const Icon(
+                                Icons.close,
+                                color: Colors.grey,
+                              );
+                            }
+                            return null; // All other states will use the default thumbIcon.
+                          }),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          "Dark Theme",
+                          style: textStyleText.copyWith(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          onPressed: null,
+                          child: Text(""),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-              ),
-              child: Container(
-                color: Theme.of(context).primaryColor,
-                width: MediaQuery.of(context).size.width,
-                height: 50,
-                child: Center(
-                  child: Text(
-                    "About this application",
-                    style: textStyleText.copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Apple SD Gothic Neo',
-                        color: Theme.of(context).primaryColorLight),
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
+                  child: Container(
+                    color: Theme.of(context).primaryColor,
+                    width: MediaQuery.of(context).size.width,
+                    height: 50,
+                    child: Center(
+                      child: Text(
+                        "About this application",
+                        style: textStyleText.copyWith(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'Apple SD Gothic Neo',
+                            color: Theme.of(context).primaryColorLight),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            Reuse.spaceBetween(),
-            Reuse.spaceBetween(),
-            Card(
-              elevation: 2,
-              child: Container(
-                padding: EdgeInsets.all(20),
-                color: Theme.of(context).primaryColorLight,
-                child: Text(
-                  "An easy to use qr scanner application designed to convert"
-                  " qr codes to readable text and convert text into qr images "
-                  "like sequence.\nYour camera and storage access is required to "
-                  "use this application",
+                Reuse.spaceBetween(),
+                Reuse.spaceBetween(),
+                Card(
+                  elevation: 2,
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    color: Theme.of(context).primaryColorLight,
+                    child: Text(
+                      "An easy to use qr scanner application designed to convert"
+                      " qr codes to readable text and convert text into qr images "
+                      "like sequence.\nYour camera and storage access is required to "
+                      "use this application",
+                      textAlign: TextAlign.center,
+                      style: textStyleText.copyWith(
+                          fontSize: 14, color: Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ),
+                Reuse.spaceBetween(),
+                Text(
+                  "Version: 1.0.1",
                   textAlign: TextAlign.center,
                   style: textStyleText.copyWith(
                       fontSize: 14, color: Theme.of(context).primaryColor),
-                ),
-              ),
+                )
+              ],
             ),
-            Reuse.spaceBetween(),
-            Text(
-              "Version: 1.0.1",
-              textAlign: TextAlign.center,
-              style: textStyleText.copyWith(
-                  fontSize: 14, color: Theme.of(context).primaryColor),
-            )
-          ],
+          ),
         ),
       ),
     );
