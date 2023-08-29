@@ -62,11 +62,22 @@ dependencies:
   #join
   path: ^1.8.0
   #share
-  share_plus: ^6.3.0
+  shared_preferences: ^2.0.0
   #
   intl: ^0.18.1
   #display data on console
   logger: ^1.0.0
+  #uuid:
+  uuid: ^3.0.7
+
+  #screenshort
+  screenshot: ^1.0.0
+  #save image
+  image_gallery_saver: ^2.0.1
+
+  #url launcher
+  url_launcher: ^6.1.7
+
 
 dev_dependencies:
   flutter_test:

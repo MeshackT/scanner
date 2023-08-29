@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:scanner/DatabaseHelper.dart';
 import 'package:scanner/Reuse.dart';
+import 'package:uuid/uuid.dart';
 
 Logger logger = Logger(
   printer: PrettyPrinter(colors: true),
@@ -35,18 +37,33 @@ class _ScannerHomeState extends State<ScannerHome> {
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.QR);
+
       logger.i(barcodeScanRes);
+      if (barcodeScanRes.contains("-1")) {
+        Fluttertoast.showToast(
+            gravity: ToastGravity.TOP,
+            backgroundColor: Theme.of(context).primaryColorLight,
+            msg: "No code scanned",
+            textColor: Theme.of(context).primaryColor);
+        return;
+      } else if (barcodeScanRes.isNotEmpty) {
+        // Check if the scan result is not empty
+        ScannedData scannedData = ScannedData(
+          id: int.tryParse(Uuid().v1()),
+          content: barcodeScanRes,
+          date: timeStamp,
+        );
 
-      // Use barcodeScanRes to insert data
-      ScannedData scannedData =
-          ScannedData(content: barcodeScanRes, date: timeStamp);
+        await DatabaseHelper.instance.insertScannedData(scannedData);
+        logger.e("Data inserted in the database ${scannedData}");
+      } else {
+        logger.e("QR code not scanned or result is empty");
 
-      await DatabaseHelper.instance.insertScannedData(scannedData);
-      logger.e("Data inserted in the database ${scannedData}");
+        return;
+      }
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
-
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
@@ -65,13 +82,31 @@ class _ScannerHomeState extends State<ScannerHome> {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.BARCODE);
       print(barcodeScanRes);
+
+      if (barcodeScanRes.contains("-1")) {
+        Fluttertoast.showToast(
+            gravity: ToastGravity.TOP,
+            backgroundColor: Theme.of(context).primaryColorLight,
+            msg: "No code scanned",
+            textColor: Theme.of(context).primaryColor);
+        return;
+      } else if (barcodeScanRes.isNotEmpty) {
+        // Check if the scan result is not empty
+
+        // Use barcodeScanRes to insert data
+        ScannedData scannedData = ScannedData(
+            id: int.tryParse(Uuid().v1()),
+            content: barcodeScanRes,
+            date: timeStamp);
+
+        await DatabaseHelper.instance.insertScannedData(scannedData);
+      } else {
+        logger.e("QR code not scanned or result is empty");
+      }
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     setState(() {
@@ -114,8 +149,9 @@ class _ScannerHomeState extends State<ScannerHome> {
                         topLeft: Radius.circular(1000),
                       ),
                       child: Container(
-                        height: MediaQuery.of(context).size.height / 8,
-                        width: MediaQuery.of(context).size.width / 1.8,
+                        height: MediaQuery.of(context).size.height / 11,
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        color: Theme.of(context).primaryColor.withOpacity(.6),
                         child: ElevatedButton(
                             onPressed: () => scanQR(), child: Text('QR scan')),
                       ),
@@ -128,8 +164,9 @@ class _ScannerHomeState extends State<ScannerHome> {
                         topLeft: Radius.circular(0),
                       ),
                       child: Container(
-                        height: MediaQuery.of(context).size.height / 8,
-                        width: MediaQuery.of(context).size.width / 1.8,
+                        color: Theme.of(context).primaryColor.withOpacity(.6),
+                        height: MediaQuery.of(context).size.height / 11,
+                        width: MediaQuery.of(context).size.width / 2.5,
                         child: ElevatedButton(
                             onPressed: () => scanQR(), child: Text('Bar Code')),
                       ),
@@ -138,14 +175,14 @@ class _ScannerHomeState extends State<ScannerHome> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
                       child: Card(
+                        color: Theme.of(context).primaryColorLight,
                         elevation: 1,
                         child: Container(
-                          margin: EdgeInsets.only(bottom: 5),
                           padding:
                               EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                           width: MediaQuery.of(context).size.width,
-                          color:
-                              Theme.of(context).primaryColor.withOpacity(.09),
+                          // color:
+                          //     Theme.of(context).primaryColor.withOpacity(.09),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -211,22 +248,25 @@ class _ScannerHomeState extends State<ScannerHome> {
               borderRadius: BorderRadius.circular(10.0),
               child: Card(
                 elevation: 2,
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                  width: MediaQuery.of(context).size.width,
-                  color: Theme.of(context).primaryColor.withOpacity(.08),
-                  child: SingleChildScrollView(
-                    child: _scanBarcode == ""
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Icon(
-                              Icons.document_scanner_rounded,
-                              color: Theme.of(context).primaryColor,
-                              size: 220,
-                            ),
-                          )
-                        : Center(
-                            child: SelectableText(
+                color: Theme.of(context).primaryColorLight,
+                child: Center(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                    width: MediaQuery.of(context).size.width,
+                    color: Theme.of(context).primaryColorLight,
+                    child: SingleChildScrollView(
+                      child: _scanBarcode == ""
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Icon(
+                                Icons.document_scanner_rounded,
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(.6),
+                                size: 200,
+                              ),
+                            )
+                          : SelectableText(
                               _scanBarcode.toString(),
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -236,7 +276,7 @@ class _ScannerHomeState extends State<ScannerHome> {
                                   fontSize: 14,
                                   fontWeight: FontWeight.w400),
                             ),
-                          ),
+                    ),
                   ),
                 ),
               ),

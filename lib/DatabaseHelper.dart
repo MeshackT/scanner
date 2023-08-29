@@ -27,7 +27,7 @@ class ScannedData {
 
   factory ScannedData.fromMap(Map<String, dynamic> map) {
     return ScannedData.withId(
-      id: map['title'],
+      id: map['id'],
       content: map['content'],
       date: DateTime.parse(map["date"]),
     );
@@ -71,7 +71,7 @@ class DatabaseHelper {
   //'Create a database'
   void _createDb(Database db, int version) async {
     await db.execute('CREATE TABLE $scannerTable('
-        '$colId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, '
+        '$colId INTEGER PRIMARY KEY , '
         '$colContent TEXT,'
         '$colDate TEXT)');
   }
@@ -79,7 +79,9 @@ class DatabaseHelper {
   //getMapList
   Future<List<Map<String, dynamic>>> getScannedDataMapList() async {
     Database? db = await this.db;
-    final List<Map<String, dynamic>> result = await db!.query(scannerTable);
+    final List<Map<String, dynamic>> result =
+        // await db!.query(scannerTable, orderBy: '${colDate} DESC Limit');
+        await db!.rawQuery("SELECT * FROM $scannerTable ORDER BY $colId DESC ");
     return result;
   }
 
@@ -94,7 +96,7 @@ class DatabaseHelper {
       scannedList.add(ScannedData.fromMap(element));
     });
 
-    scannedList.sort((scanB, scanA) => scanB.date!.compareTo(scanA.date!));
+    // scannedList.sort((scanA, scanB) => scanA.date!.compareTo(scanB.date!));
 
     return scannedList;
   }
@@ -130,6 +132,13 @@ class DatabaseHelper {
       where: '$colId = ?',
       whereArgs: [id],
     );
+    // return result;
+  }
+
+  Future<void> deletingAllScannedData() async {
+    Database? db = await this.db;
+    // final int result =
+    await db!.rawDelete("DELETE FROM scanned_table");
     // return result;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:intl/intl.dart';
 import 'package:scanner/ScannerHome.dart';
 
@@ -34,7 +35,7 @@ class _HistoryHomeState extends State<HistoryHome> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: _scannedData,
+        future: _databaseHelper.getScannedList(),
         builder: (context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return Padding(
@@ -48,10 +49,39 @@ class _HistoryHomeState extends State<HistoryHome> {
                   Reuse.spaceBetween(),
                   Text(
                     "No Data yet...",
-                    style: textStyleText,
+                    style: textStyleText.copyWith(
+                        color: Theme.of(context).primaryColor),
                   ),
                   Reuse.spaceBetween(),
                   CircularProgressIndicator(),
+                ],
+              ),
+            );
+          } else if (snapshot.data.length <= 0) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Reuse.HeaderText(
+                      context, "History", "A list of my recent scans"),
+                  Reuse.spaceBetween(),
+                  Reuse.spaceBetween(),
+                  Reuse.spaceBetween(),
+                  Text(
+                    "No Data yet...",
+                    style: textStyleText.copyWith(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Reuse.spaceBetween(),
+                  Reuse.spaceBetween(),
+                  SizedBox(
+                    child: Center(
+                      child: Image.asset("assets/logo.png"),
+                    ),
+                  ),
                 ],
               ),
             );
@@ -68,12 +98,135 @@ class _HistoryHomeState extends State<HistoryHome> {
                 SizedBox(
                   height: 5,
                 ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Scans: ${snapshot.data!.length.toString()}",
+                      textAlign: TextAlign.center,
+                      style: textStyleText.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).primaryColor),
+                    ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(200.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 4,
+                        height: MediaQuery.of(context).size.height / 18,
+                        color: Theme.of(context).primaryColor,
+                        child: TextButton.icon(
+                          onPressed: () async {
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: AlertDialog(
+                                title: const Text(
+                                  textAlign: TextAlign.center,
+                                  'Confirm',
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                content: Text(
+                                  "Permanently delete this previously scanned data?",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .primaryColorDark
+                                          .withOpacity(.70)),
+                                ),
+                                actions: <Widget>[
+                                  Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          child: SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                12,
+                                            child: TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text(
+                                                'No',
+                                                style: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              12,
+                                          child: TextButton(
+                                            onPressed: () async {
+                                              //Delete the record
+                                              try {
+                                                DatabaseHelper.instance
+                                                    .deletingAllScannedData();
+                                                await _databaseHelper
+                                                    .deletingAllScannedData()
+                                                    .then((value) =>
+                                                        _updateScannedList())
+                                                    .whenComplete(
+                                                      () => setState(() {
+                                                        // _updateScannedList(); // This function should update _dataList
+                                                      }),
+                                                    );
+                                              } catch (e) {}
+                                            },
+                                            child: Text(
+                                              'Yes',
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.delete,
+                            size: 18,
+                            color: Theme.of(context).primaryColorLight,
+                          ),
+                          label: Text(
+                            'All',
+                            style: textStyleText.copyWith(
+                                fontSize: 14,
+                                color: Theme.of(context).primaryColorLight),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
                 Expanded(
                   flex: 1,
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: ListView.builder(
-                      reverse: true,
+                      // reverse: true,
                       // padding: const EdgeInsets.only(bottom: 130.0),
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
@@ -82,9 +235,11 @@ class _HistoryHomeState extends State<HistoryHome> {
 
                         String timeDate = DateFormat('MMM d, h:mm a')
                             .format(scannedData.date!);
-                        return InkWell(
+                        return GestureDetector(
                           onDoubleTap: () async {
-                            try {} on Exception catch (e) {
+                            try {
+                              searchData(context, scannedData.content);
+                            } on Exception catch (e) {
                               // Anything else that is an exception
                               logger.e(scannedData.id);
                               if (kDebugMode) {
@@ -107,13 +262,13 @@ class _HistoryHomeState extends State<HistoryHome> {
                                         .withOpacity(.7),
                                     child: Icon(Icons.link),
                                   ),
-                                  title: Text(
+                                  title: SelectableText(
                                     scannedData.content!,
                                     style: TextStyle(
                                         color: Theme.of(context).primaryColor),
                                   ),
                                   subtitle: Text(
-                                    timeDate.toString(),
+                                    "${timeDate.toString()}",
                                     style: TextStyle(
                                         color: Theme.of(context)
                                             .primaryColor
@@ -127,19 +282,104 @@ class _HistoryHomeState extends State<HistoryHome> {
                                           .withOpacity(.7),
                                     ),
                                     onPressed: () async {
-                                      // Call the delete function here
-                                      await _databaseHelper
-                                          .deletingScannedData(
-                                              snapshot.data![index].id)
-                                          .then((value) => _updateScannedList())
-                                          .whenComplete(
-                                            () => setState(() {
-                                              // _updateScannedList(); // This function should update _dataList
-                                            }),
-                                          );
-                                      // Update the UI by reloading the data
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        child: AlertDialog(
+                                          title: const Text(
+                                            textAlign: TextAlign.center,
+                                            'Confirm',
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                          content: Text(
+                                            "Permanently delete this previously scanned data?",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .primaryColorDark
+                                                    .withOpacity(.70)),
+                                          ),
+                                          actions: <Widget>[
+                                            Center(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                    child: SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              12,
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text(
+                                                          'No',
+                                                          style: TextStyle(
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            12,
+                                                    child: TextButton(
+                                                      onPressed: () async {
+                                                        //Delete the record
+                                                        try {
+                                                          // Call the delete function here
+                                                          await _databaseHelper
+                                                              .deletingScannedData(
+                                                                  snapshot
+                                                                      .data![
+                                                                          index]
+                                                                      .id)
+                                                              .then((value) =>
+                                                                  _updateScannedList())
+                                                              .whenComplete(
+                                                                () => setState(
+                                                                    () {
+                                                                  // _updateScannedList(); // This function should update _dataList
+                                                                }),
+                                                              );
+                                                          // Update the UI by reloading the data
 
-                                      logger.e(index);
+                                                          logger.e(index);
+                                                        } catch (e) {}
+                                                      },
+                                                      child: Text(
+                                                        'Yes',
+                                                        style: TextStyle(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
                                     },
                                   ),
                                 ),
@@ -156,4 +396,84 @@ class _HistoryHomeState extends State<HistoryHome> {
           );
         });
   }
+}
+
+Future<dynamic> searchData(BuildContext context, String content) {
+  return showDialog(
+    useSafeArea: false,
+    context: context,
+    builder: (context) => Scaffold(
+      appBar: AppBar(
+        elevation: .5,
+        title: Text(
+          "Qr Code content",
+          style: textStyleText.copyWith(
+              color: Theme.of(context).primaryColorLight, fontSize: 16),
+        ),
+      ),
+      backgroundColor: Theme.of(context).primaryColorLight,
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Reuse.spaceBetween(),
+            Reuse.spaceBetween(),
+            Reuse.HeaderText(context, "Overview ", "See your previous results"),
+            SizedBox(
+                width: MediaQuery.of(context).size.width / 2,
+                height: MediaQuery.of(context).size.height / 5,
+                child: Image.asset("assets/logo.png")),
+            Card(
+              elevation: 1,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                color: Theme.of(context).primaryColorLight,
+                child: SelectableText(
+                  content,
+                  style: textStyleText,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Reuse.spaceBetween(),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(100.0),
+              child: Container(
+                width: MediaQuery.of(context).size.width / 3,
+                color: Theme.of(context).primaryColor,
+                child: IconButton(
+                    onPressed: () async {
+                      try {
+                        if (content.isNotEmpty || content.length > 0) {
+                          await FlutterShare.share(
+                            title: 'QR code results',
+                            text: content.toString(),
+                          );
+                        } else {
+                          Reuse.callSnack(
+                            context,
+                            "There's no content",
+                          );
+                        }
+                      } on Exception catch (e) {
+                        Reuse.callSnack(
+                          context,
+                          e.toString(),
+                        );
+                      }
+                    },
+                    icon: Icon(
+                      Icons.share,
+                      color: Theme.of(context).primaryColorLight,
+                    )),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }

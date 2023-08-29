@@ -95,7 +95,10 @@ class Reuse {
 ButtonStyle buttonRound = OutlinedButton.styleFrom(
   elevation: 1,
   shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(20))),
+    borderRadius: BorderRadius.all(
+      Radius.circular(20),
+    ),
+  ),
 );
 
 TextStyle textStyleText = TextStyle(
@@ -104,12 +107,12 @@ TextStyle textStyleText = TextStyle(
 InputDecoration textInputDecoration = InputDecoration(
   fillColor: Colors.white,
   filled: true,
-  enabledBorder: OutlineInputBorder(
-    borderSide: const BorderSide(color: Colors.indigo, width: 2),
-    borderRadius: BorderRadius.circular(8),
-  ),
-  border: OutlineInputBorder(
-    borderSide: const BorderSide(color: Colors.indigo, width: 2),
-    borderRadius: BorderRadius.circular(8),
-  ),
+  // enabledBorder: OutlineInputBorder(
+  //   borderSide: const BorderSide(color: Colors.indigo, width: 2),
+  //   borderRadius: BorderRadius.circular(8),
+  // ),
+  // border: OutlineInputBorder(
+  //   borderSide: const BorderSide(color: Colors.indigo, width: 2),
+  //   borderRadius: BorderRadius.circular(8),
+  // ),
 );
