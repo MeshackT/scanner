@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:scanner/CreateHome.dart';
 import 'package:scanner/HistoryHome.dart';
 import 'package:scanner/MoreHome.dart';
@@ -26,30 +24,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool darkModeEnabled = false;
 
-  /*get permission*/
-  Future<void> getPermission() async {
-    await Permission.phone.request();
-    await Permission.photos.request();
-    await Permission.contacts.request();
-
-    // You can request multiple permissions at once.
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-      Permission.camera,
-      //add more permission to request here.
-    ].request();
-
-    if (statuses[Permission.storage]!.isDenied) {
-      Fluttertoast.showToast(
-          backgroundColor: Colors.indigo, msg: "Permission Denied");
-    } else if (statuses[Permission.camera]!.isDenied) {
-      Fluttertoast.showToast(
-          backgroundColor: Colors.indigo, msg: "Permission Denied");
-    } else {
-      return;
-    }
-  }
-
   Future<void> _loadSwitchState() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -73,7 +47,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    getPermission();
     _loadSwitchState();
   }
 

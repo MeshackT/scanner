@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
@@ -96,7 +95,6 @@ class _HistoryHomeState extends State<HistoryHome> {
             child: SingleChildScrollView(
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
                 color: Theme.of(context).primaryColorLight,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
@@ -165,7 +163,7 @@ class _HistoryHomeState extends State<HistoryHome> {
                               String timeDate = DateFormat('MMM d, h:mm a')
                                   .format(scannedData.date!);
                               return GestureDetector(
-                                onDoubleTap: () async {
+                                onTap: () async {
                                   try {
                                     searchData(context, scannedData.content);
                                   } on Exception catch (e) {
@@ -216,7 +214,10 @@ class _HistoryHomeState extends State<HistoryHome> {
                                             showDialog(
                                                 context: context,
                                                 builder: (context) {
-                                                  return CupertinoAlertDialog(
+                                                  return AlertDialog(
+                                                    backgroundColor:
+                                                        Theme.of(context)
+                                                            .primaryColorLight,
                                                     title: const Text(
                                                       textAlign:
                                                           TextAlign.center,
@@ -234,9 +235,7 @@ class _HistoryHomeState extends State<HistoryHome> {
                                                       style: TextStyle(
                                                           color: Theme.of(
                                                                   context)
-                                                              .primaryColorDark
-                                                              .withOpacity(
-                                                                  .70)),
+                                                              .primaryColor),
                                                     ),
                                                     actions: <Widget>[
                                                       Center(
@@ -335,6 +334,7 @@ class _HistoryHomeState extends State<HistoryHome> {
         builder: (BuildContext context) {
           // );
           return AlertDialog(
+            backgroundColor: Theme.of(context).primaryColorLight,
             title: const Text(
               textAlign: TextAlign.center,
               'Confirm',
@@ -342,10 +342,9 @@ class _HistoryHomeState extends State<HistoryHome> {
                   color: Colors.red, fontSize: 20, fontWeight: FontWeight.w700),
             ),
             content: Text(
-              "Permanently delete this previously scanned data?",
+              "Permanently delete all your previously scanned data?",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Theme.of(context).primaryColorDark.withOpacity(.70)),
+              style: TextStyle(color: Theme.of(context).primaryColor),
             ),
             actions: <Widget>[
               Center(

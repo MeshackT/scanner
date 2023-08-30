@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:scanner/Reuse.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'feedbackclass.dart';
 
@@ -19,13 +20,23 @@ class MoreHome extends StatefulWidget {
 }
 
 class _MoreHomeState extends State<MoreHome> {
+  Future<void>? _launched;
+
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
           color: Theme.of(context).primaryColorLight,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -212,12 +223,39 @@ class _MoreHomeState extends State<MoreHome> {
                   ),
                 ),
                 Reuse.spaceBetween(),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Container(
+                    color: Theme.of(context).primaryColorLight,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height / 20,
+                    child: TextButton(
+                      onPressed: () async {
+                        String url =
+                            'https://github.com/MeshackT/Policies/blob/main/Privacy-QR%20Scanner%20FSH.md';
+                        FlutterShare.share(
+                          title: 'View policy',
+                          chooserTitle: "Policy",
+                          linkUrl: url,
+                        );
+                      },
+                      child: Text(
+                        "Policy",
+                        textAlign: TextAlign.left,
+                        style: textStyleText.copyWith(
+                            color: Theme.of(context).primaryColor),
+                      ),
+                    ),
+                  ),
+                ),
+                Reuse.spaceBetween(),
                 Text(
-                  "Version: 1.0.1",
+                  "Version: 1.0.3",
                   textAlign: TextAlign.center,
                   style: textStyleText.copyWith(
                       fontSize: 14, color: Theme.of(context).primaryColor),
-                )
+                ),
+                Reuse.spaceBetween(),
               ],
             ),
           ),

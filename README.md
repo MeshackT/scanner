@@ -15,10 +15,13 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+appbundle ID
+flutter pub global run rename --bundleId com.fsh.qrscanner
 
-    flutter pub global run rename --bundleId com.fsa.qrscanner
-    flutter pub global run rename --appname "QR Scanner FSA"
+app name
+flutter pub global run rename --appname "QR Scanner FSH"
 
+meshacknkosi@45642
 
 1. icon, app name, appID
 
@@ -28,7 +31,7 @@ add the file to android folder => app folder
 add the path to store file
 
 3. sign application and create app bundle
-    add the def functions ontop of android
+    add the def functions on top of android
     add and replace the build class
 4. flutter build appbundle
 

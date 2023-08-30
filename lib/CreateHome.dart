@@ -211,7 +211,7 @@ class _CreateHomeState extends State<CreateHome> {
                         child: Screenshot(
                           controller: screenshotController,
                           child: Container(
-                            // color: Theme.of(context).primaryColorLight,
+                            color: Colors.white,
                             child: Center(
                               child: QrImageView(
                                 data: qrText,

@@ -33,6 +33,19 @@ class _ScannerHomeState extends State<ScannerHome> {
 
   Future<void> scanQR() async {
     String barcodeScanRes;
+    // PermissionStatus cameraStatus = await Permission.camera.status;
+    // if (!cameraStatus.isGranted) {
+    //   await Permission.camera.request();
+    //   if (await Permission.camera.isDenied) {
+    //     // Handle permission denied case
+    //     Fluttertoast.showToast(
+    //       msg: "Camera permission denied",
+    //       backgroundColor: Theme.of(context).primaryColor,
+    //       textColor: Theme.of(context).primaryColorLight,
+    //     );
+    //     return;
+    //   }
+    // }
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
@@ -77,6 +90,20 @@ class _ScannerHomeState extends State<ScannerHome> {
 // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> scanBarcodeNormal() async {
     String barcodeScanRes;
+
+    // PermissionStatus cameraStatus = await Permission.camera.status;
+    // if (!cameraStatus.isGranted) {
+    //   await Permission.camera.request();
+    //   if (await Permission.camera.isDenied) {
+    //     // Handle permission denied case
+    //     Fluttertoast.showToast(
+    //       msg: "Camera permission denied",
+    //       backgroundColor: Theme.of(context).primaryColor,
+    //       textColor: Theme.of(context).primaryColorLight,
+    //     );
+    //     return;
+    //   }
+    // }
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
