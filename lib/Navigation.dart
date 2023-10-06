@@ -59,14 +59,16 @@ class _NavigationState extends State<Navigation> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColorLight,
       extendBody: true,
-      body: PageView(
-        controller: pageController,
-        children: screens,
-        onPageChanged: (index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
+      body: SafeArea(
+        child: PageView(
+          controller: pageController,
+          children: screens,
+          onPageChanged: (index) {
+            setState(() {
+              selectedIndex = index;
+            });
+          },
+        ),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

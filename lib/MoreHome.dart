@@ -250,7 +250,7 @@ class _MoreHomeState extends State<MoreHome> {
                 ),
                 Reuse.spaceBetween(),
                 Text(
-                  "Version: 1.0.3",
+                  "Version: 1.0.4",
                   textAlign: TextAlign.center,
                   style: textStyleText.copyWith(
                       fontSize: 14, color: Theme.of(context).primaryColor),

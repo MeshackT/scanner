@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.3
+version: 1.0.4
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
@@ -34,49 +34,49 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  cupertino_icons:
   #change the Id of the app
-  rename: ^2.1.1
+  rename:
   #app Icon
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons:
   #navbar
-  google_nav_bar: ^5.0.6
+  google_nav_bar:
   #Scanner
-  flutter_barcode_scanner: ^2.0.0
+  flutter_barcode_scanner:
   #Convert text to qr code
-  qr_flutter: ^4.1.0
+  qr_flutter:
   #share image
-  esys_flutter_share_plus: ^2.2.0
+  esys_flutter_share_plus:
   #share text
-  flutter_share: ^2.0.0
+  flutter_share:
   #Toast
-  fluttertoast: ^8.2.2
+  fluttertoast:
   #path Provider
-  path_provider: ^2.1.0
+  path_provider:
   #http calls
-  http: ^0.13.6
+  http:
   #handles permission from the device
-  permission_handler: ^10.1.0
+  permission_handler:
   #db
-  sqflite: ^2.0.0
+  sqflite:
   #join
-  path: ^1.8.0
+  path:
   #share
-  shared_preferences: ^2.0.0
+  shared_preferences:
   #
-  intl: ^0.18.1
+  intl:
   #display data on console
-  logger: ^1.0.0
+  logger:
   #uuid:
-  uuid: ^3.0.7
+  uuid:
 
   #screenshort
-  screenshot: ^1.0.0
+  screenshot:
   #save image
-  image_gallery_saver: ^2.0.1
+  image_gallery_saver:
 
   #url launcher
-  url_launcher: ^6.1.7
+  url_launcher:
 
 
 dev_dependencies:

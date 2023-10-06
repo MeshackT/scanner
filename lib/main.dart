@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:scanner/CreateHome.dart';
 import 'package:scanner/HistoryHome.dart';
 import 'package:scanner/MoreHome.dart';
@@ -52,6 +53,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.grey),
+    );
     // initial state of the switch
     // bool darkModeEnabled = false;
 

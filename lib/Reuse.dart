@@ -35,7 +35,7 @@ class Reuse {
               subtitle,
               textAlign: TextAlign.start,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 14,
                 fontWeight: FontWeight.w400,
                 color: contextDataColor.primaryColorLight,
               ),

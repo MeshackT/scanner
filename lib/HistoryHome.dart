@@ -82,7 +82,11 @@ class _HistoryHomeState extends State<HistoryHome> {
                     Reuse.spaceBetween(),
                     SizedBox(
                       child: Center(
-                        child: Image.asset("assets/logo.png"),
+                        child: Image.asset(
+                          "assets/logo.png",
+                          width: 200,
+                          height: 180,
+                        ),
                       ),
                     ),
                   ],
@@ -91,237 +95,229 @@ class _HistoryHomeState extends State<HistoryHome> {
             );
           }
 
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                color: Theme.of(context).primaryColorLight,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
+          return Container(
+            width: MediaQuery.of(context).size.width,
+            color: Theme.of(context).primaryColorLight,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Reuse.HeaderText(
+                      context, "History", "A list of my recent scans"),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Reuse.HeaderText(
-                          context, "History", "A list of my recent scans"),
-                      SizedBox(
-                        height: 5,
+                      Text(
+                        "Scans: ${snapshot.data!.length.toString()}",
+                        textAlign: TextAlign.center,
+                        style: textStyleText.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: Theme.of(context).primaryColor),
                       ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Scans: ${snapshot.data!.length.toString()}",
-                            textAlign: TextAlign.center,
-                            style: textStyleText.copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: Theme.of(context).primaryColor),
-                          ),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(200.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 4,
-                              height: MediaQuery.of(context).size.height / 18,
-                              color: Theme.of(context).primaryColor,
-                              child: TextButton.icon(
-                                onPressed: () async {
-                                  showThis();
-                                },
-                                icon: Icon(
-                                  Icons.delete,
-                                  size: 18,
-                                  color: Theme.of(context).primaryColorLight,
-                                ),
-                                label: Text(
-                                  'All',
-                                  style: textStyleText.copyWith(
-                                      fontSize: 14,
-                                      color:
-                                          Theme.of(context).primaryColorLight),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: ListView.builder(
-                            // reverse: true,
-                            // padding: const EdgeInsets.only(bottom: 130.0),
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (context, index) {
-                              // Use the actual data
-                              final scannedData = snapshot.data![index];
-
-                              String timeDate = DateFormat('MMM d, h:mm a')
-                                  .format(scannedData.date!);
-                              return GestureDetector(
-                                onTap: () async {
-                                  try {
-                                    searchData(context, scannedData.content);
-                                  } on Exception catch (e) {
-                                    // Anything else that is an exception
-                                    logger.e(scannedData.id);
-                                    if (kDebugMode) {
-                                      print('Unknown exception: $e');
-                                    }
-                                  }
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 4),
-                                    child: Container(
-                                      color: Theme.of(context)
-                                          .primaryColor
-                                          .withOpacity(.03),
-                                      child: ListTile(
-                                        leading: CircleAvatar(
-                                          backgroundColor: Theme.of(context)
-                                              .primaryColor
-                                              .withOpacity(.7),
-                                          child: Icon(Icons.link),
-                                        ),
-                                        title: SelectableText(
-                                          scannedData.content!,
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                        ),
-                                        subtitle: Text(
-                                          "${timeDate.toString()}",
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColor
-                                                  .withOpacity(.49)),
-                                        ),
-                                        trailing: IconButton(
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Theme.of(context)
-                                                .primaryColor
-                                                .withOpacity(.7),
-                                          ),
-                                          onPressed: () async {
-                                            showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    backgroundColor:
-                                                        Theme.of(context)
-                                                            .primaryColorLight,
-                                                    title: const Text(
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      'Confirm',
-                                                      style: TextStyle(
-                                                          color: Colors.red,
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.w700),
-                                                    ),
-                                                    content: Text(
-                                                      "Permanently delete this previously scanned data?",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          color: Theme.of(
-                                                                  context)
-                                                              .primaryColor),
-                                                    ),
-                                                    actions: <Widget>[
-                                                      Center(
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10.0),
-                                                              child: TextButton(
-                                                                onPressed: () {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                },
-                                                                child: Text(
-                                                                  'No',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .primaryColor,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                //Delete the record
-                                                                try {
-                                                                  // Call the delete function here
-                                                                  await _databaseHelper
-                                                                      .deletingScannedData(snapshot
-                                                                          .data![
-                                                                              index]
-                                                                          .id)
-                                                                      .then((value) =>
-                                                                          _updateScannedList())
-                                                                      .whenComplete(
-                                                                        () => setState(
-                                                                            () {
-                                                                          Navigator.of(context)
-                                                                              .pop();
-                                                                        }),
-                                                                      );
-                                                                  // Update the UI by reloading the data
-
-                                                                  logger
-                                                                      .e(index);
-                                                                } catch (e) {}
-                                                              },
-                                                              child: Text(
-                                                                'Yes',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .primaryColor,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                });
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(200.0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 4,
+                          height: MediaQuery.of(context).size.height / 18,
+                          color: Theme.of(context).primaryColor,
+                          child: TextButton.icon(
+                            onPressed: () async {
+                              showThis();
                             },
+                            icon: Icon(
+                              Icons.delete,
+                              size: 18,
+                              color: Theme.of(context).primaryColorLight,
+                            ),
+                            label: Text(
+                              'All',
+                              style: textStyleText.copyWith(
+                                  fontSize: 14,
+                                  color: Theme.of(context).primaryColorLight),
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: ListView.builder(
+                        // reverse: true,
+                        // padding: const EdgeInsets.only(bottom: 130.0),
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          // Use the actual data
+                          final scannedData = snapshot.data![index];
+
+                          String timeDate = DateFormat('MMM d, h:mm a')
+                              .format(scannedData.date!);
+                          return GestureDetector(
+                            onTap: () async {
+                              try {
+                                searchData(context, scannedData.content);
+                              } on Exception catch (e) {
+                                // Anything else that is an exception
+                                logger.e(scannedData.id);
+                                if (kDebugMode) {
+                                  print('Unknown exception: $e');
+                                }
+                              }
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4),
+                                child: Container(
+                                  color: Theme.of(context)
+                                      .primaryColor
+                                      .withOpacity(.03),
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundColor: Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(.7),
+                                      child: Icon(Icons.link),
+                                    ),
+                                    title: SelectableText(
+                                      scannedData.content!,
+                                      style: TextStyle(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                    subtitle: Text(
+                                      "${timeDate.toString()}",
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .primaryColor
+                                              .withOpacity(.49)),
+                                    ),
+                                    trailing: IconButton(
+                                      icon: Icon(
+                                        Icons.delete,
+                                        size: 18,
+                                        color: Theme.of(context)
+                                            .primaryColor
+                                            .withOpacity(.7),
+                                      ),
+                                      onPressed: () async {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .primaryColorLight,
+                                                title: const Text(
+                                                  textAlign: TextAlign.center,
+                                                  'Confirm',
+                                                  style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                                content: Text(
+                                                  "Permanently delete this previously scanned data?",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor),
+                                                ),
+                                                actions: <Widget>[
+                                                  Center(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10.0),
+                                                          child: TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            child: Text(
+                                                              'No',
+                                                              style: TextStyle(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .primaryColor,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () async {
+                                                            //Delete the record
+                                                            try {
+                                                              // Call the delete function here
+                                                              await _databaseHelper
+                                                                  .deletingScannedData(
+                                                                      snapshot
+                                                                          .data![
+                                                                              index]
+                                                                          .id)
+                                                                  .then((value) =>
+                                                                      _updateScannedList())
+                                                                  .whenComplete(
+                                                                    () =>
+                                                                        setState(
+                                                                            () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                    }),
+                                                                  );
+                                                              // Update the UI by reloading the data
+
+                                                              logger.e(index);
+                                                            } catch (e) {}
+                                                          },
+                                                          child: Text(
+                                                            'Yes',
+                                                            style: TextStyle(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );

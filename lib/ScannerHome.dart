@@ -168,6 +168,8 @@ class _ScannerHomeState extends State<ScannerHome> {
                 SizedBox(
                   height: 10,
                 ),
+                Reuse.spaceBetween(),
+                Reuse.spaceBetween(),
                 Center(
                   child: Container(
                     alignment: Alignment.center,
@@ -193,23 +195,26 @@ class _ScannerHomeState extends State<ScannerHome> {
                             ),
                           ),
                           Reuse.spaceBetween(),
-                          ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(1000),
-                              bottomRight: Radius.circular(1000),
-                              topLeft: Radius.circular(0),
-                            ),
-                            child: Container(
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(.6),
-                              height: MediaQuery.of(context).size.height / 11,
-                              width: MediaQuery.of(context).size.width / 2.5,
-                              child: ElevatedButton(
-                                  onPressed: () => scanQR(),
-                                  child: Text('Bar Code')),
-                            ),
-                          ),
+                          Reuse.spaceBetween(),
+                          Reuse.spaceBetween(),
+
+                          // ClipRRect(
+                          //   borderRadius: const BorderRadius.only(
+                          //     bottomLeft: Radius.circular(1000),
+                          //     bottomRight: Radius.circular(1000),
+                          //     topLeft: Radius.circular(0),
+                          //   ),
+                          //   child: Container(
+                          //     color: Theme.of(context)
+                          //         .primaryColor
+                          //         .withOpacity(.6),
+                          //     height: MediaQuery.of(context).size.height / 11,
+                          //     width: MediaQuery.of(context).size.width / 2.5,
+                          //     child: ElevatedButton(
+                          //         onPressed: () => scanQR(),
+                          //         child: Text('Bar Code')),
+                          //   ),
+                          // ),
                           Reuse.spaceBetween(),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10.0),
@@ -305,7 +310,7 @@ class _ScannerHomeState extends State<ScannerHome> {
                                       color: Theme.of(context)
                                           .primaryColor
                                           .withOpacity(.6),
-                                      size: 200,
+                                      size: 180,
                                     ),
                                   )
                                 : SelectableText(
