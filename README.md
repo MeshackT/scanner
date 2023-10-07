@@ -16,7 +16,7 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 appbundle ID
-flutter pub global run rename --bundleId com.fsh.qrscanner
+flutter pub global run rename --bundleId com.fsh.qrcode
 
 app name
 flutter pub global run rename --appname "QR Scanner FSH"

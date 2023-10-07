@@ -33,19 +33,6 @@ class _ScannerHomeState extends State<ScannerHome> {
 
   Future<void> scanQR() async {
     String barcodeScanRes;
-    // PermissionStatus cameraStatus = await Permission.camera.status;
-    // if (!cameraStatus.isGranted) {
-    //   await Permission.camera.request();
-    //   if (await Permission.camera.isDenied) {
-    //     // Handle permission denied case
-    //     Fluttertoast.showToast(
-    //       msg: "Camera permission denied",
-    //       backgroundColor: Theme.of(context).primaryColor,
-    //       textColor: Theme.of(context).primaryColorLight,
-    //     );
-    //     return;
-    //   }
-    // }
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
@@ -91,19 +78,6 @@ class _ScannerHomeState extends State<ScannerHome> {
   Future<void> scanBarcodeNormal() async {
     String barcodeScanRes;
 
-    // PermissionStatus cameraStatus = await Permission.camera.status;
-    // if (!cameraStatus.isGranted) {
-    //   await Permission.camera.request();
-    //   if (await Permission.camera.isDenied) {
-    //     // Handle permission denied case
-    //     Fluttertoast.showToast(
-    //       msg: "Camera permission denied",
-    //       backgroundColor: Theme.of(context).primaryColor,
-    //       textColor: Theme.of(context).primaryColorLight,
-    //     );
-    //     return;
-    //   }
-    // }
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
@@ -191,13 +165,12 @@ class _ScannerHomeState extends State<ScannerHome> {
                                   .withOpacity(.6),
                               child: ElevatedButton(
                                   onPressed: () => scanQR(),
-                                  child: Text('QR scan')),
+                                  child: Text('Image')),
                             ),
                           ),
                           Reuse.spaceBetween(),
                           Reuse.spaceBetween(),
                           Reuse.spaceBetween(),
-
                           // ClipRRect(
                           //   borderRadius: const BorderRadius.only(
                           //     bottomLeft: Radius.circular(1000),
@@ -336,4 +309,17 @@ class _ScannerHomeState extends State<ScannerHome> {
       ),
     );
   }
+
+  // pick an image
+  // Future<void> _pickImage() async {
+  //   final pickedFile =
+  //       await ImagePicker().pickImage(source: ImageSource.gallery);
+  //   if (pickedFile != null) {
+  //     final imageBytes = File(pickedFile.path).readAsBytesSync();
+  //     final result = await QrBitBuffer().decode(Uint8List.fromList(imageBytes));
+  //     setState(() {
+  //       _scannedData = result;
+  //     });
+  //   }
+  // }
 }

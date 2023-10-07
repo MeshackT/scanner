@@ -77,6 +77,8 @@ dependencies:
 
   #url launcher
   url_launcher:
+  image_picker: ^1.0.4
+  qr_code_scanner: ^1.0.1
 
 
 dev_dependencies:
