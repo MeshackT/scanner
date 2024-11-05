@@ -1,39 +1,32 @@
 # scanner
 
-Scanner project
+Offline Scanner project for huawe app gallery
 
-## Getting Started
+1. The application has 4 layouts. One which is for scanning qr codes and displaying the data scand below using a widget. THe dat acan be share by clicking a share button
+2. The second screen shows a history of your scanned data and dates and enables you to delete all history or just individual data. When an Item is selected another screens opens to show the data and share it if need be.
+3. THe Third screen enables your to create your own qr code and store the data in an image formate on your phone. THis image can be share as well. ofcourse this also is stored in your history.
+4. On this last layout, the user can toggle between light and dark mode display.
+   You can send feedback to the developer through the app.
+   You can download more applications shared in the app.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
 
+
+//for me
 appbundle ID
-flutter pub global run rename --bundleId com.fsh.qrcode
+flutter pub global run rename --bundleId my bundle
 
 app name
 flutter pub global run rename --appname "QR Scanner FSH"
 
-meshacknkosi@45642
 
 1. icon, app name, appID
 
 2.create a key.properties file under android
-keytool -genkey -v -keystore C:\Users\mesha\Desktop\upload-keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload
-add the file to android folder => app folder
-add the path to store file
 
 3. sign application and create app bundle
     add the def functions on top of android
     add and replace the build class
 4. flutter build appbundle
-
-Note: C:\Users\mesha\AppData\Local\Pub\Cache\hosted\pub.dev\esys_flutter_share_plus-2.2.0\android\src\main\java\de\esys\esysfluttershare\EsysFlutterSharePlugin.j
-ava uses unchecked or unsafe operations.
